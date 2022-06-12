@@ -1,0 +1,43 @@
+1.
+UPDATE PRODUCT_MASTER 
+    SET ReorderLvl = 80
+    WHERE Description LIKE 'Shirts';
+
+2.
+UPDATE PRODUCT_MASTER
+    SET SellPrice = SellPrice + (10/100)*SellPrice;
+
+3.
+UPDATE SALESMAN_MASTER
+    SET YtdSales = YtdSales + 35
+    WHERE SalesmanNo LIKE 'S00003';
+
+4.
+UPDATE SALES_ORDER_DETAILS 
+    SET QtyDisp = QtyOrdered
+    WHERE ProductRate <= 1000;
+
+5.
+UPDATE CLIENT_MASTER
+    SET Pincode = 400001
+    WHERE City LIKE 'Mumbai';
+
+6.
+UPDATE PRODUCT_MASTER 
+    SET ReorderLvl = 2*ReorderLvl;
+
+7.
+DELETE FROM SALES_ORDER
+    WHERE OrderStatus LIKE 'Cancelled';
+
+8.
+DELETE FROM SALESMAN_MASTER;
+
+9.
+SELECT * FROM PRODUCT_MASTER
+    WHERE QtyInHand < ReorderLvl;
+
+10.
+UPDATE EMP
+    SET MGR = (SELECT EMPNO FROM EMP WHERE ENAME LIKE 'Blake')
+    WHERE ENAME IN ('Smith', 'Adams');
