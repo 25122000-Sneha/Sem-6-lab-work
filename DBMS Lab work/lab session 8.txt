@@ -1,0 +1,89 @@
+create table salespeople (
+	SNUM number primary key,
+	SNAME varchar2(20),
+	CITY varchar2(20),
+	COMM number
+	);
+
+create table customer (
+	CNUM number primary key,
+	CNAME varchar2(20),
+	CITY varchar2(20),
+	RATING number,
+	SNUM number references salespeople(SNUM)
+	);
+
+create table orders (
+	ONUM number primary key,
+	AMT number,
+	ODATE date,
+	CNUM number references customer(CNUM),
+	SNUM number references salespeople(SNUM)
+	);
+
+insert into salespeople values(1001, 'Peel', 'London', 0.12);
+insert into salespeople values(1002, 'Serees', 'SanJose', 0.13);
+insert into salespeople values(1003, 'Motika', 'London', 0.11);
+insert into salespeople values(1004, 'Rifkin', 'Barcelona', 0.15);
+insert into salespeople values(1005, 'Amelrood', 'New York', 0.10);
+
+insert into customer values(2001, 'Hoffman', 'London', 100, 1001);
+insert into customer values(2002, 'Giovanni', 'Rome', 200, 1003);
+insert into customer values(2003, 'Lill', 'San Junipere', 200, 1002);
+insert into customer values(2004, 'Gass', 'Berlin', 300, 1002);
+insert into customer values(2005, 'Clemens', 'London', 100, 1001);
+insert into customer values(2006, 'Cineros', 'SanJose', 300, 1005);
+insert into customer values(2007, 'Pereira', 'Rome', 100, 1004);
+
+insert into orders values(3001, 18.69, '10-Mar-90', 2006, 1005);
+insert into orders values(3003, 767.19, '10-Mar-90', 2001, 1001);
+insert into orders values(3002, 1901.10, '10-Mar-90', 2007, 1004);
+insert into orders values(3005, 5160.45, '10-Mar-90', 2003, 1002);
+insert into orders values(3006, 1698.16, '10-Mar-90', 2006, 1005);
+insert into orders values(3009, 1713.23, '10-Apr-90', 2002, 1003);
+insert into orders values(3008, 75.75, '10-Apr-90', 2004, 1002);
+
+1.
+create view view1 as 
+	select CNAME 
+	FROM customer
+	WHERE rating = (select max(RATING) FROM customer);
+
+select * from view1;
+
+2.
+create view view2 AS
+	select CITY, count(SNAME) from salespeople
+	GROUP BY CITY;
+    
+select * from view2;
+
+3.
+CREATE VIEW view3 AS
+	SELECT SNUM, AVG(AMT), SUM(AMT) FROM orders
+	GROUP BY SNUM;
+    
+select * from view3;
+
+4.
+CREATE VIEW view4 AS
+	SELECT s.SNAME, count(CNUM) FROM salespeople s, orders o
+	where s.SNUM = o.snum
+	GROUP BY SNAME 
+	HAVING COUNT(CNUM) > 1;
+    
+select * from view4;
+
+5.
+CREATE VIEW view5 AS
+	SELECT ONUM, SNAME, CNAME
+	FROM orders o, salespeople s, customer c
+	WHERE o.CNUM = c.CNUM and o.SNUM = c.SNUM
+	and c.SNUM = s.SNUM;
+    
+select * from view5;
+
+6.
+create view view6 AS
+	select SNUM, COMM from salespeople;
+select * from view6;

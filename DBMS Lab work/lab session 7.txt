@@ -1,0 +1,115 @@
+CREATE TABLE DEPARTMENT2(
+	Department_ID VARCHAR(10) PRIMARY KEY,
+	Department_name VARCHAR(25),
+	Location_ID VARCHAR(25)
+	);
+
+CREATE TABLE EMPLOYEE_1(
+	EmpID VARCHAR(10) PRIMARY KEY,
+	First_name VARCHAR(25),
+	Last_name VARCHAR2(25),
+	Department_ID VARCHAR(10) REFERENCES DEPARTMENT(Department_ID),
+	Salary NUMBER(10),
+	Job VARCHAR(20),
+	HireDate Date,
+	Comm Number(10),
+	Grade VARCHAR(2),
+	City VARCHAR(20)
+	);
+
+
+INSERT INTO DEPARTMENT2 VALUES ('D1501', 'Accounting', 'L0001');
+INSERT INTO DEPARTMENT2 VALUES ('D1502', 'Research', 'L0002');
+INSERT INTO DEPARTMENT2 VALUES ('D1503', 'Sales', 'L0003');
+INSERT INTO DEPARTMENT2 VALUES ('D1504', 'Operations', 'L0004');
+INSERT INTO DEPARTMENT2 VALUES ('D1505', 'Operations', 'L0005');
+
+INSERT INTO EMPLOYEE_1 VALUES('E0001', 'Turner', 'Gomes', 'D1504', 26000, 'Clerk', '26-Mar-2000', 2500, 'A', 'Bangalore');
+INSERT INTO EMPLOYEE_1 VALUES('E0002', 'Smith', 'Barua', 'D1502', 25000, 'Manager', '24-Apr-2001', 2000, 'B', 'Kolkata');
+INSERT INTO EMPLOYEE_1 VALUES('E0003', 'Ford', 'Swift', 'D1505', 45000, 'Salesman', '4-Aug-2004', NULL, 'C', 'Chennai');
+INSERT INTO EMPLOYEE_1 VALUES('E0004', 'Martin', 'Grover', 'D1503', 30000, 'Analyst', '6-Sep-2000', 800, 'D', 'Pune');
+INSERT INTO EMPLOYEE_1 VALUES('E0005', 'Allen', 'Gomes', 'D1501', 26000, 'Programmer', '7-Dec-2002', NULL, 'E', 'Pune');
+INSERT INTO EMPLOYEE_1 VALUES('E0006', 'Mita', 'Singh', 'D1502', 20000, 'Executive', '6-Jan-2000', 850, 'F', 'Dallas');
+
+
+
+
+1.
+SELECT First_name FROM EMPLOYEE_1
+	WHERE Salary in (SELECT MAX(Salary) FROM EMPLOYEE_1);
+
+2.
+SELECT First_name FROM EMPLOYEE_1
+	WHERE Salary in (SELECT MAX(Salary) FROM EMPLOYEE_1 WHERE JOB LIKE 'Salesman');
+
+3.
+SELECT First_name FROM EMPLOYEE_1
+	WHERE Salary in (SELECT MIN(Salary) FROM EMPLOYEE_1 WHERE Job LIKE 'Clerk');
+
+4.
+SELECT Department_name 
+	FROM DEPARTMENT2 
+	WHERE Department_ID = (SELECT Department_ID FROM EMPLOYEE_1
+	GROUP BY Department_ID 
+	HAVING avg(Salary) = select max(avg(Salary)) from EMPLOYEE_1
+	GROUP BY DEPARTMENT_ID);
+
+5.
+SELECT First_name FROM EMPLOYEE_1
+	WHERE Salary > (SELECT Salary FROM EMPLOYEE_1
+	WHERE First_name LIKE 'Turner');
+
+6.
+SELECT First_name FROM EMPLOYEE_1
+	WHERE HireDate > (SELECT HireDate FROM EMPLOYEE_1
+	WHERE First_name LIKE 'Allen');
+	
+7.
+SELECT Department_name FROM DEPARTMENT2
+	WHERE Department_ID = (SELECT Department_ID FROM EMPLOYEE_1 WHERE First_name LIKE 'Ford');
+
+
+8.
+SELECT Department_name 
+	FROM DEPARTMENT2
+	WHERE Department_ID = (SELECT Department_ID FROM EMPLOYEE_1
+	WHERE Salary in (SELECT MAX(Salary) FROM EMPLOYEE_1));
+	
+
+9.
+SELECT City FROM EMPLOYEE_1
+	WHERE First_name LIKE 'Smith';
+
+10.
+SELECT City FROM EMPLOYEE_1
+	WHERE Job LIKE 'Manager';
+
+11.
+SELECT Grade FROM EMPLOYEE_1
+	WHERE First_name LIKE 'Martin';
+
+12.
+SELECT First_name FROM EMPLOYEE_1
+	WHERE Salary > ALL(SELECT Salary FROM EMPLOYEE_1
+	WHERE City LIKE 'Dallas');
+
+13.
+SELECT Department_name FROM DEPARTMENT2
+	WHERE Department_ID NOT IN (SELECT Department_ID FROM EMPLOYEE_1);
+
+14.
+SELECT First_name FROM EMPLOYEE_1
+	WHERE HireDate = (SELECT HireDate FROM EMPLOYEE_1 WHERE First_name LIKE 'Adams');
+
+15.
+SELECT Department_name FROM DEPARTMENT2
+	WHERE Department_ID IN (SELECT Department_ID FROM EMPLOYEE_1
+	WHERE Comm is NOT NULL);
+
+16.
+SELECT First_name FROM EMPLOYEE_1 
+	WHERE Salary IN (SELECT MIN(Salary) FROM EMPLOYEE_1
+	GROUP BY Department_ID);
+17.
+SELECT Department_name FROM Department2 outer
+	WHERE 1 < (Select COUNT(First_name) FROM EMPLOYEE_1 WHERE Department_ID = outer.Department_ID);

@@ -1,0 +1,57 @@
+CREATE TABLE CUSTOMERS2(
+	CustomerID NUMBER(10),
+	CustomerName VARCHAR(25),
+	ContactName VARCHAR(25),
+	Address VARCHAR(25),
+	City VARCHAR(25),
+	PostalCode NUMBER(10),
+	Country VARCHAR(25)
+	);
+
+CREATE TABLE SUPPLIERS(
+	SupplierID Number(10),
+	SupplierName VARCHAR(30),
+	ContactName VARCHAR(25),
+	Address VARCHAR(25),
+	City VARCHAR(25),
+	PostalCode NUMBER(25),
+	Country VARCHAR(25)
+	);
+
+INSERT INTO CUSTOMERS2 VALUES(1, 'AlfredFlutter', 'Maria Anders', 'Obere Str. 57', 'Berlin', 12209, 'Germany');
+INSERT INTO CUSTOMERS2 VALUES(2, 'Ana Helados', 'Ana Trujillo', 'Avda. Construction 2222', 'Mexico D.F.', 05021, 'Mexico');
+INSERT INTO CUSTOMERS2 VALUES(3, 'Antonio Moreno', 'Antonio Moreno', 'Mataderos 2312', 'Mexico D.F.', 05023, 'Mexico');
+
+
+INSERT INTO SUPPLIERS VALUES(1, 'Exotic Liquid', 'Charlotte Cooper', '49 GilbertSt.', 'Berlin', 12209, 'Germany');
+INSERT INTO SUPPLIERS VALUES(2, 'New Orleans Cajun Delights', 'Shelley Burke', 'P.O. Box', 'Mexico D.F.', 05023, 'Mexico');
+INSERT INTO SUPPLIERS VALUES(3, 'Grandma Kelly''s Homestead', 'Regina Murphy', '707 Oxford', 'Ann Arbor', 48104, 'USA');
+
+
+1.
+SELECT City FROM Customers2
+	UNION 
+	SELECT City FROM SUPPLIERS;
+
+2.
+SELECT City FROM Customers2
+	UNION ALL
+	SELECT City FROM SUPPLIERS;
+
+3.
+SELECT City FROM CUSTOMERS2 WHERE Country LIKE 'Germany'
+	UNION ALL
+	SELECT City FROM SUPPLIERS WHERE Country LIKE 'Germany';
+
+4.
+SELECT CustomerName, SupplierName
+	FROM CUSTOMERS2, SUPPLIERS
+	WHERE CUSTOMERS2.City = SUPPLIERS.City;
+
+5.
+SELECT Country FROM SUPPLIERS
+	MINUS
+	SELECT Country FROM CUSTOMERS2;
+
+	
+

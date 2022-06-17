@@ -1,0 +1,89 @@
+To run the code in Oracle SQL PLUS 11g:
+- run the command 'set serveroutput on'
+- then type the trigger code
+- type '/' in next line to run the code
+
+CREATE TABLE Employee1 (
+    EID NUMBER(5),
+    ENAME VARCHAR(20),
+    CITY VARCHAR(20),
+    DESIGNATION VARCHAR(20),
+    SALARY NUMBER(9),
+    PERKS NUMBER(9)
+);
+
+1.
+CREATE TRIGGER audit_sal
+BEFORE INSERT ON 
+Employee1
+FOR EACH ROW 
+BEGIN 
+    IF (:NEW.PERKS > 500)
+    THEN :NEW.SALARY := :NEW.SALARY - 300;
+    END IF;
+    dbms_output.put_line('New salary: ' || :NEW.salary); 
+END;
+
+INSERT INTO Employee1 VALUES(12001, 'Bhaskar', 'Kolkata', 'Manager', 600, 100);
+INSERT INTO Employee1 VALUES(12002, 'Nita', 'Hyderabad', 'Analyst', 4000, 900);
+INSERT INTO Employee1 VALUES(12003, 'Prachi', 'Kolkata', 'Executive', 7000, 600);
+INSERT INTO Employee1 VALUES(12004, 'Prabha', 'Pune', 'Clerk', 400, 200);
+
+
+select * from Employee1;
+
+2.
+CREATE TRIGGER modify_sal
+BEFORE UPDATE ON Employee1
+FOR EACH ROW
+BEGIN
+    IF (:OLD.SALARY <= 500)
+    THEN :NEW.SALARY := 10000;
+    ELSE 
+    :NEW.SALARY := 15000;
+    END IF;
+    dbms_output.put_line('Old salary: ' || :OLD.salary); 
+    dbms_output.put_line('New salary: ' || :NEW.salary); 
+END;
+
+
+UPDATE Employee1
+    SET DESIGNATION = 'HR'
+    WHERE EID = 12004;
+
+
+3.
+CREATE TABLE EMP1 (
+    EMPID NUMBER(5),
+    ENAME VARCHAR(20),
+    SALARY NUMBER(9)
+);
+
+CREATE TABLE EMP1_BACKUP (
+    EMPID NUMBER(5),
+    ENAME VARCHAR(20),
+    SALARY NUMBER(9)
+);
+
+CREATE TRIGGER back_up
+AFTER INSERT ON EMP1
+FOR EACH ROW
+BEGIN
+    INSERT INTO EMP1_BACKUP
+    VALUES (:NEW.EMPID, :NEW.ENAME, :NEW.SALARY);
+END;
+
+select * from EMP1;
+select * from EMP1_BACKUP;
+
+drop trigger back_up;
+delete from EMP1;
+delete from EMP1_BACKUP;
+
+INSERT INTO EMP1 VALUES(10001, 'Smita', 40000);
+INSERT INTO EMP1 VALUES(10002, 'Srishti', 50000);
+INSERT INTO EMP1 VALUES(10003, 'Rachana', 30000);
+INSERT INTO EMP1 VALUES(10004, 'Mita', 45000);
+
+
+
